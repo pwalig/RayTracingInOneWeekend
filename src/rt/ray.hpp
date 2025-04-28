@@ -12,6 +12,7 @@ namespace rt {
 		glm::vec3 orig;
 		glm::vec3 dir;
 
+		ray() = default;
 		inline ray(const glm::vec3& Origin, const glm::vec3& Direction) : orig(Origin), dir(Direction) {}
 
 		inline glm::vec3 at(float t) const {

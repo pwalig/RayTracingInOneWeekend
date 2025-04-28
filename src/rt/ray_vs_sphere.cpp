@@ -1,11 +1,12 @@
 #include "ray_vs_sphere.hpp"
 #include "ray.hpp"
+#include "sphere.hpp"
 #include "intersection_info.hpp"
 
-bool rt::ray_vs_sphere(const glm::vec3& center, float radius, const ray& r, intersection_info& ii) {
-	glm::vec3 oc = center - r.orig;
+bool rt::ray_vs_sphere(const sphere& sph, const ray& r, intersection_info& ii) {
+	glm::vec3 oc = sph.pos - r.orig;
 	float h = glm::dot(r.dir, oc);
-	float c = glm::dot(oc, oc) - radius * radius;
+	float c = glm::dot(oc, oc) - sph.radius * sph.radius;
 	float delta = h*h - c;
 
 	if (delta < 0) return false;
@@ -14,7 +15,8 @@ bool rt::ray_vs_sphere(const glm::vec3& center, float radius, const ray& r, inte
 	if (t1 >= 0.0f && t1 < ii.distance) {
 		ii.distance = t1;
 		ii.point = r.at(t1);
-		ii.normal = glm::normalize(ii.point - center);
+		ii.normal = glm::normalize(ii.point - sph.pos);
+		ii.material = sph.material;
 		return true;
 	}
 
