@@ -1,7 +1,12 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <vector>
+
+#include "sphere.hpp"
 
 namespace rt {
+	class intersection_info;
+
 	class ray {
 	public:
 		glm::vec3 orig;
@@ -13,6 +18,6 @@ namespace rt {
 			return dir * t + orig;
 		}
 
-		glm::vec3 color() const;
+		intersection_info cast(const std::vector<sphere>& word) const;
 	};
 }

@@ -1,13 +1,13 @@
 #include "ray.hpp"
+
 #include "ray_vs_sphere.hpp"
 #include "intersection_info.hpp"
 
-glm::vec3 rt::ray::color() const
+rt::intersection_info rt::ray::cast(const std::vector<rt::sphere>& word) const
 {
 	intersection_info ii;
-	glm::vec3 spherePos(0.0f, 0.0f, 1.0f);
-	if (ray_vs_sphere(spherePos, 0.5f, *this, ii)) {
-		return 0.5f * (ii.normal + glm::vec3(1.0f));
+	for (const sphere& sphere : word) {
+		ray_vs_sphere(sphere.pos, sphere.radius, *this, ii);
 	}
-	else return glm::vec3(0.0f);
+	return ii;
 }
