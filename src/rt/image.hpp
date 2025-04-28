@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 
+#include "../matrix.hpp"
+
 namespace rt {
 	struct pixel {
 		u8 r, g, b;
@@ -24,6 +26,7 @@ namespace rt {
 		const pixel& at(u32 X, u32 Y) const;
 
 		image(u32 Width, u32 Height);
+		image(const matrix<glm::vec3>& Hdr);
 		~image();
 
 		void to_png(const char* filename) const;

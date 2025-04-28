@@ -18,6 +18,15 @@ rt::image::image(u32 Width, u32 Height)
 	: pdata(new pixel[Width * Height]),
 	width(Width), height(Height) { }
 
+rt::image::image(const matrix<glm::vec3>& Hdr) :
+	pdata(new pixel[Hdr.x() * Hdr.y()]),
+	width(Hdr.x()), height(Hdr.y())
+{
+	for (u32 i = 0; i < width; ++i)
+		for (u32 j = 0; j < height; ++j)
+			at(i, j) = pixel(Hdr[i][j]);
+}
+
 rt::image::~image()
 {
 	delete[] pdata;
