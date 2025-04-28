@@ -13,7 +13,8 @@ bool rt::ray_vs_sphere(const glm::vec3& center, float radius, const ray& r, inte
 	float t1 = h - std::sqrt(delta);
 	if (t1 >= 0.0f && t1 < ii.distance) {
 		ii.distance = t1;
-		ii.normal = glm::normalize(r.at(t1) - center);
+		ii.point = r.at(t1);
+		ii.normal = glm::normalize(ii.point - center);
 		return true;
 	}
 
