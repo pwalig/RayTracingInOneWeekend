@@ -3,7 +3,7 @@
 
 #include <glm/fwd.hpp>
 
-#include "random.hpp"
+#include "../random.hpp"
 
 namespace rt {
     class ray;
@@ -22,9 +22,13 @@ namespace rt {
 
         scatter_function scatter_func;
         glm::vec3 albedo;
+        float fuzz;
 
-        inline material(scatter_function Scatter, const glm::vec3& Albedo) :
-            scatter_func(Scatter), albedo(Albedo) {}
+        inline material(
+            scatter_function Scatter,
+            const glm::vec3& Albedo = glm::vec3(1.0f),
+            float Fuzz = 0.0f
+        ) : scatter_func(Scatter), albedo(Albedo), fuzz(Fuzz) {}
 
         inline bool scatter(
             const ray& r_in,

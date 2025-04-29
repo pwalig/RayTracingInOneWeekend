@@ -14,6 +14,7 @@ bool rt::lambertian::scatter(
 	glm::vec3 scatter_direction = ii.normal + random_vector(gen);
 	if (glm::length(scatter_direction) < 0.000001f)
 		scatter_direction = ii.normal;
+	else scatter_direction = glm::normalize(scatter_direction);
 	scattered = ray(ii.point, scatter_direction);
 	attenuation = mat.albedo;
 	return true;

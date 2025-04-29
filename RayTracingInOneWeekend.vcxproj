@@ -135,8 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\rt\camera.cpp" />
     <ClCompile Include="src\rt\image.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\rt\material\dielectric.cpp" />
     <ClCompile Include="src\rt\material\lambert.cpp" />
     <ClCompile Include="src\rt\material\metal.cpp" />
     <ClCompile Include="src\rt\ray.cpp" />
@@ -148,10 +150,11 @@
     <ClInclude Include="src\rt\camera.hpp" />
     <ClInclude Include="src\rt\image.hpp" />
     <ClInclude Include="src\rt\intersection_info.hpp" />
+    <ClInclude Include="src\rt\material\dielectric.hpp" />
     <ClInclude Include="src\rt\material\lambert.hpp" />
     <ClInclude Include="src\rt\material\material.hpp" />
     <ClInclude Include="src\rt\material\metal.hpp" />
-    <ClInclude Include="src\rt\material\random.hpp" />
+    <ClInclude Include="src\rt\random.hpp" />
     <ClInclude Include="src\rt\ray.hpp" />
     <ClInclude Include="src\rt\ray_vs_sphere.hpp" />
     <ClInclude Include="src\rt\renderer.hpp" />

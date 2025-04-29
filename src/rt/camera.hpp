@@ -1,27 +1,32 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#include "ray.hpp"
+#include "types.hpp"
+#include "random.hpp"
 
 namespace rt {
 	class camera {
-	private:
-		using u32 = uint32_t;
 	public:
+		glm::quat rot = glm::quat();
 		glm::vec3 pos = glm::vec3();
 		glm::vec2 viewport = glm::vec2();
 		glm::vec3 offset = glm::vec3();
 		glm::vec2 delta = glm::vec2();
+		float defocus;
 
-		inline camera(glm::vec3 Position, u32 width, u32 height, float focal, float scale) :
-			pos(Position),
-			viewport(scale * (float(width) / height), scale),
-			offset(viewport.x / 2.0f, viewport.y / 2.0f, focal),
-			delta(-viewport.x / width, -viewport.y / height)
-		{ }
+		camera(
+			glm::vec3 Position, glm::vec3 lookAt,
+			u32 width, u32 height,
+			float fov, float focal, float blur = 0.0f
+		);
 
 		inline glm::vec3 pixel0() const {
-			glm::vec3 upper_left = pos + offset;
-			return upper_left + glm::vec3(0.5f * delta, 0.0f);
+			return pos + offset + glm::vec3(0.5f * delta, 0.0f);
 		}
+
+		ray get_ray(u32 x, u32 j, Rand& gen) const;
 
 	};
 }

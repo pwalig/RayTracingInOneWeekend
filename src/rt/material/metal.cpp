@@ -3,14 +3,12 @@
 #include "../ray.hpp"
 #include "../intersection_info.hpp"
 
-inline glm::vec3 reflect(const glm::vec3& v, const glm::vec3& n) {
-    return v - 2*glm::dot(v,n)*n;
-}
-
 bool rt::metal::scatter(const ray& r_in, const intersection_info& rec, const material& mat, Rand& gen, glm::vec3& attenuation, ray& scattered)
 {
-	glm::vec3 reflected = reflect(r_in.dir, rec.normal);
+	glm::vec3 reflected = glm::reflect(r_in.dir, rec.normal);
+	reflected = glm::normalize(reflected + (mat.fuzz * random_vector(gen)));
 	scattered = ray(rec.point, reflected);
 	attenuation = mat.albedo;
-	return true;
+	//return true;
+	return (glm::dot(scattered.dir, rec.normal) > 0);
 }
