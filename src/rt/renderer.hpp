@@ -32,6 +32,6 @@ namespace rt {
 			);
 		}
 
-		glm::vec3 ray_color(const ray& r, u32 depth = 8);
+		glm::vec3 ray_color(ray& r, u32 depth = 8);
 	};
 }

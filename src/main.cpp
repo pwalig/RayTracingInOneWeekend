@@ -48,13 +48,14 @@ int main() {
             if ((center - glm::vec3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
                 if (choose_mat < 0.8) {
 					rend.materials.push_back(material(lambertian::scatter, glm::vec3(albdist(rend.gen), albdist(rend.gen), albdist(rend.gen))));
+					rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
                 } else if (choose_mat < 0.95) {
 					rend.materials.push_back(material(metal::scatter, glm::vec3(albdist(rend.gen), albdist(rend.gen), albdist(rend.gen)), albdist(rend.gen)));
+					rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
                 } else {
-					rend.materials.push_back(material(dielectric::scatter, glm::vec3(0.0f), 1.5f));
+					rend.world.push_back(sphere(center, 0.2f, 3));
                 }
 
-                rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
             }
         }
     }

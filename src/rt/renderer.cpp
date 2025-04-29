@@ -1,17 +1,16 @@
 #include "renderer.hpp"
 #include "ray.hpp"
-#include "intersection_info.hpp"
+#include "hit_info.hpp"
 
-glm::vec3 rt::renderer::ray_color(const ray& r, u32 depth)
+glm::vec3 rt::renderer::ray_color(ray& r, u32 depth)
 {
 	if (depth == 0) return glm::vec3(0.0f);
 
-	intersection_info ii = r.cast(world);
+	hit_info ii = r.cast(world);
 	if (ii.hit()) {
 		glm::vec3 attenuation;
-		ray scattered;
-		if (materials[ii.material].scatter(r, ii, gen, attenuation, scattered)) {
-			return attenuation * ray_color(scattered, depth - 1);
+		if (materials[ii.material].scatter(r, ii, gen, attenuation)) {
+			return attenuation * ray_color(r, depth - 1);
 		}
 		else return glm::vec3(0.0f, 0.0f, 0.0f);
 	}

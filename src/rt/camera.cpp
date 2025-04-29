@@ -24,7 +24,9 @@ rt::camera::camera(
 	offset = glm::vec3(viewport.x / 2.0f, viewport.y / 2.0f, focal);
 	delta = glm::vec2(-viewport.x / width, -viewport.y / height);
 
-	//glm::vec3 look = lookAt - pos;
+	glm::vec3 look = glm::normalize(lookAt - pos);
+	glm::vec3 lookx = glm::normalize(glm::vec3(look.x, 0.0f, look.z));
+	glm::vec3 looky = glm::normalize(glm::vec3(0.0f, look.y, look.z));
 	//glm::vec3 cross = glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), look);
 	//rot.x = cross.x;
 	//rot.y = cross.y;
@@ -32,7 +34,12 @@ rt::camera::camera(
 	//rot.w = glm::length(look) + glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), look);
 	//rot = glm::normalize(rot);
 
-	rot = glm::quat(glm::vec3(glm::radians(8.588f), glm::radians(76.922f), 0.0f));
+	rot = glm::quat(glm::vec3(
+		glm::radians(8.588f),
+		//glm::acos(glm::dot(looky, glm::vec3(0.0f, 0.0f, 1.0f))),
+		glm::acos(glm::dot(lookx, glm::vec3(0.0f, 0.0f, 1.0f))),
+		0.0f
+	));
 }
 
 rt::ray rt::camera::get_ray(u32 x, u32 y, Rand& gen) const

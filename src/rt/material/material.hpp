@@ -7,17 +7,16 @@
 
 namespace rt {
     class ray;
-    class intersection_info;
+    class hit_info;
 
     class material {
     public:
         using scatter_function = bool(*)(
-			const ray& r_in,
-			const intersection_info& rec,
+			ray& r,
+			const hit_info& rec,
             const material& mat,
 			Rand& gen,
-			glm::vec3& attenuation,
-			ray& scattered
+			glm::vec3& attenuation
 		);
 
         scatter_function scatter_func;
@@ -31,13 +30,12 @@ namespace rt {
         ) : scatter_func(Scatter), albedo(Albedo), fuzz(Fuzz) {}
 
         inline bool scatter(
-            const ray& r_in,
-            const intersection_info& rec,
+            ray& r,
+            const hit_info& rec,
             Rand& gen,
-            glm::vec3& attenuation,
-            ray& scattered
+            glm::vec3& attenuation
         ) {
-            return scatter_func(r_in, rec, *this, gen, attenuation, scattered);
+            return scatter_func(r, rec, *this, gen, attenuation);
         }
     };
 }

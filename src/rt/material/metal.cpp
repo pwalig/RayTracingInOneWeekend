@@ -1,14 +1,13 @@
 #include "metal.hpp"
 
 #include "../ray.hpp"
-#include "../intersection_info.hpp"
+#include "../hit_info.hpp"
 
-bool rt::metal::scatter(const ray& r_in, const intersection_info& rec, const material& mat, Rand& gen, glm::vec3& attenuation, ray& scattered)
+bool rt::metal::scatter(ray& r, const hit_info& rec, const material& mat, Rand& gen, glm::vec3& attenuation)
 {
-	glm::vec3 reflected = glm::reflect(r_in.dir, rec.normal);
+	glm::vec3 reflected = glm::reflect(r.dir, rec.normal);
 	reflected = glm::normalize(reflected + (mat.fuzz * random_vector(gen)));
-	scattered = ray(rec.point, reflected);
+	r = ray(rec.point, reflected, r.exiting);
 	attenuation = mat.albedo;
-	//return true;
-	return (glm::dot(scattered.dir, rec.normal) > 0);
+	return (glm::dot(r.dir, rec.normal) > 0);
 }

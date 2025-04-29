@@ -3,8 +3,9 @@
 
 namespace rt {
 	class ray;
-	class intersection_info;
 	class sphere;
+	class hit_info;
 
-	bool ray_vs_sphere(const sphere& center, const ray& r, intersection_info& ii);
+	bool ray_vs_sphere(const sphere& center, const ray& r, hit_info& ii);
+	bool ray_vs_sphere_exit(const sphere& center, const ray& r, hit_info& ii);
 }

@@ -5,20 +5,22 @@
 #include "sphere.hpp"
 
 namespace rt {
-	class intersection_info;
+	class hit_info;
 
 	class ray {
 	public:
 		glm::vec3 orig;
 		glm::vec3 dir;
+		bool exiting = false;
 
-		ray() = default;
-		inline ray(const glm::vec3& Origin, const glm::vec3& Direction) : orig(Origin), dir(Direction) {}
+		//ray() = default;
+		inline ray(const glm::vec3& Origin, const glm::vec3& Direction, bool Exiting = false) :
+			orig(Origin), dir(Direction), exiting(Exiting) {}
 
 		inline glm::vec3 at(float t) const {
 			return dir * t + orig;
 		}
 
-		intersection_info cast(const std::vector<sphere>& word) const;
+		hit_info cast(const std::vector<sphere>& word) const;
 	};
 }

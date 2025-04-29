@@ -59,7 +59,7 @@
     <ClInclude Include="src\rt\types.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\rt\intersection_info.hpp">
+    <ClInclude Include="src\rt\hit_info.hpp">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\rt\sphere.hpp">

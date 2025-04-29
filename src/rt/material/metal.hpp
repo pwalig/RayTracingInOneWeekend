@@ -7,12 +7,11 @@
 namespace rt {
 	namespace metal {
 		bool scatter(
-			const ray& r_in,
-			const intersection_info& rec,
+			ray& r,
+			const hit_info& rec,
 			const material& mat,
 			Rand& gen,
-			glm::vec3& attenuation,
-			ray& scattered
+			glm::vec3& attenuation
 		);
 	}
 }
