@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 
 #include "rt/image.hpp"
@@ -14,7 +15,7 @@
 using namespace rt;
 
 int main() {
-    u8 samples = 500;
+    u8 samples = 100;
     matrix<glm::vec3> img(1200, 675, glm::vec3(0.0f));
     glm::vec3 campos = glm::vec3(-13.0f, 2.0f, -3.0f);
     camera cam(
@@ -25,7 +26,7 @@ int main() {
 
     renderer rend;
     std::random_device randomDevice;
-    thread_local std::mt19937 gen(randomDevice());
+    std::mt19937 gen(randomDevice());
     rend.world = {
         sphere(glm::vec3(0.0f, -1000.0f, 0.0f), 1000.0f, 0),
         sphere(glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 3),
@@ -47,7 +48,9 @@ int main() {
 
             if ((center - glm::vec3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
                 glm::vec3 albedo = glm::vec3(albdist(gen), albdist(gen), albdist(gen));
-                albedo *= albedo;
+                albedo.x *= albedo.x;
+                albedo.y *= albedo.y;
+                albedo.z *= albedo.z;
                 if (choose_mat < 0.8) {
 					rend.materials.push_back(material(lambertian::scatter, albedo));
 					rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
@@ -62,18 +65,34 @@ int main() {
         }
     }
 
-	for (u32 i = 0; i < img.x(); i++) {
-		std::clog << "\rScanlines remaining: " << (img.x() - i) << ' ' << std::flush;
-		for (u32 j = 0; j < img.y(); j++) {
-            for (u8 sample = 0; sample < samples; sample++) {
-                ray r = cam.get_ray(i, j, gen);
-				img[i][j] += rend.ray_color(r, gen, 20);
-            }
-            img[i][j] /= samples;
-            img[i][j] = renderer::gamma_correction(img[i][j]);
-        }
+    std::vector<std::thread> threads;
+    u32 concurency = std::thread::hardware_concurrency();
+    std::cout << concurency << '\n';
+    threads.reserve(concurency);
+    for (u32 th = 0; th < concurency; ++th) {
+        int seed = randomDevice();
+        threads.push_back(std::thread([&img, &cam, &rend, th, seed, concurency, samples]() {
+				std::mt19937 gen(seed);
+				for (u32 i = th; i < img.x(); i += concurency) {
+					if (th == 0) std::clog << "\rScanlines remaining: " << (img.x() - i) << ' ' << std::flush;
+					for (u32 j = 0; j < img.y(); j++) {
+						for (u8 sample = 0; sample < samples; sample++) {
+							ray r = cam.get_ray(i, j, gen);
+							img[i][j] += rend.ray_color(r, gen, 20);
+						}
+						img[i][j] /= samples;
+						img[i][j] = renderer::gamma_correction(img[i][j]);
+					}
+				}
+            }));
     }
+
+    for (u32 th = 0; th < concurency; ++th) {
+        threads[th].join();
+    }
+
     std::clog << "\rDone.                 \n";
+
 
     image(img).to_png("out.png");
 }
