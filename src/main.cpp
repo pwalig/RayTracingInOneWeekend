@@ -14,8 +14,8 @@
 using namespace rt;
 
 int main() {
-    u8 samples = 10;
-    matrix<glm::vec3> img(480, 320, glm::vec3(0.0f));
+    u8 samples = 500;
+    matrix<glm::vec3> img(1200, 675, glm::vec3(0.0f));
     glm::vec3 campos = glm::vec3(-13.0f, 2.0f, -3.0f);
     camera cam(
         campos,
@@ -25,7 +25,7 @@ int main() {
 
     renderer rend;
     std::random_device randomDevice;
-    rend.gen = std::mt19937(randomDevice());
+    thread_local std::mt19937 gen(randomDevice());
     rend.world = {
         sphere(glm::vec3(0.0f, -1000.0f, 0.0f), 1000.0f, 0),
         sphere(glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 3),
@@ -42,15 +42,17 @@ int main() {
     std::uniform_real_distribution<float> albdist(0.0f, 1.0f);
 	for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
-            auto choose_mat = albdist(rend.gen);
-            glm::vec3 center(a + 0.9*albdist(rend.gen), 0.2, b + 0.9*albdist(rend.gen));
+            auto choose_mat = albdist(gen);
+            glm::vec3 center(a + 0.9*albdist(gen), 0.2, b + 0.9*albdist(gen));
 
             if ((center - glm::vec3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
+                glm::vec3 albedo = glm::vec3(albdist(gen), albdist(gen), albdist(gen));
+                albedo *= albedo;
                 if (choose_mat < 0.8) {
-					rend.materials.push_back(material(lambertian::scatter, glm::vec3(albdist(rend.gen), albdist(rend.gen), albdist(rend.gen))));
+					rend.materials.push_back(material(lambertian::scatter, albedo));
 					rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
                 } else if (choose_mat < 0.95) {
-					rend.materials.push_back(material(metal::scatter, glm::vec3(albdist(rend.gen), albdist(rend.gen), albdist(rend.gen)), albdist(rend.gen)));
+					rend.materials.push_back(material(metal::scatter, albedo, albdist(gen)));
 					rend.world.push_back(sphere(center, 0.2f, rend.materials.size() - 1));
                 } else {
 					rend.world.push_back(sphere(center, 0.2f, 3));
@@ -60,14 +62,12 @@ int main() {
         }
     }
 
-    //glm::vec3 pixel0 = cam.pixel0();
-
 	for (u32 i = 0; i < img.x(); i++) {
 		std::clog << "\rScanlines remaining: " << (img.x() - i) << ' ' << std::flush;
 		for (u32 j = 0; j < img.y(); j++) {
             for (u8 sample = 0; sample < samples; sample++) {
-                ray r = cam.get_ray(i, j, rend.gen);
-				img[i][j] += rend.ray_color(r);
+                ray r = cam.get_ray(i, j, gen);
+				img[i][j] += rend.ray_color(r, gen, 20);
             }
             img[i][j] /= samples;
             img[i][j] = renderer::gamma_correction(img[i][j]);

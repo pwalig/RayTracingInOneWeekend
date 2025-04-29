@@ -2,7 +2,7 @@
 #include "ray.hpp"
 #include "hit_info.hpp"
 
-glm::vec3 rt::renderer::ray_color(ray& r, u32 depth)
+glm::vec3 rt::renderer::ray_color(ray& r, Rand& gen, u32 depth)
 {
 	if (depth == 0) return glm::vec3(0.0f);
 
@@ -10,7 +10,7 @@ glm::vec3 rt::renderer::ray_color(ray& r, u32 depth)
 	if (ii.hit()) {
 		glm::vec3 attenuation;
 		if (materials[ii.material].scatter(r, ii, gen, attenuation)) {
-			return attenuation * ray_color(r, depth - 1);
+			return attenuation * ray_color(r, gen, depth - 1);
 		}
 		else return glm::vec3(0.0f, 0.0f, 0.0f);
 	}

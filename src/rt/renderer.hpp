@@ -13,7 +13,6 @@ namespace rt {
 	class ray;
 	class renderer {
 	public:
-		Rand gen;
 		std::vector<sphere> world;
 		std::vector<material> materials;
 
@@ -32,6 +31,6 @@ namespace rt {
 			);
 		}
 
-		glm::vec3 ray_color(ray& r, u32 depth = 8);
+		glm::vec3 ray_color(ray& r, Rand& gen, u32 depth = 8);
 	};
 }
