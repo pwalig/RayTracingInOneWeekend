@@ -13,7 +13,7 @@ bool rt::ray_vs_sphere(const sphere& sph, const ray& r, hit_info& ii) {
 
 	delta = std::sqrt(delta);
 	float t1 = h - delta;
-	if (t1 > 0.00001f && t1 < ii.distance) {
+	if (t1 > 0.0f && t1 < ii.distance) {
 		ii.distance = t1;
 		ii.point = r.at(t1);
 		ii.normal = glm::normalize(ii.point - sph.pos);
@@ -34,7 +34,7 @@ bool rt::ray_vs_sphere_exit(const sphere& sph, const ray& r, hit_info& ii) {
 
 	delta = std::sqrt(delta);
 	float t1 = h + delta;
-	if (t1 > 0.00001f && t1 < ii.distance) {
+	if (t1 > 0.0f && t1 < ii.distance) {
 		ii.distance = t1;
 		ii.point = r.at(t1);
 		ii.normal = -glm::normalize(ii.point - sph.pos);

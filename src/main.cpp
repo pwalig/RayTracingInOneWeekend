@@ -15,7 +15,7 @@
 using namespace rt;
 
 int main() {
-    u8 samples = 100;
+    u8 samples = 500;
     matrix<glm::vec3> img(1200, 675, glm::vec3(0.0f));
     glm::vec3 campos = glm::vec3(-13.0f, 2.0f, -3.0f);
     camera cam(
@@ -26,7 +26,7 @@ int main() {
 
     renderer rend;
     std::random_device randomDevice;
-    std::mt19937 gen(randomDevice());
+    std::mt19937 gen(2);
     rend.world = {
         sphere(glm::vec3(0.0f, -1000.0f, 0.0f), 1000.0f, 0),
         sphere(glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 3),
