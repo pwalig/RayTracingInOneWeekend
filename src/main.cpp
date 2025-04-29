@@ -4,8 +4,9 @@
 #include "rt/image.hpp"
 #include "rt/ray.hpp"
 #include "rt/camera.hpp"
-#include "rt/intersection_info.hpp"
 #include "rt/renderer.hpp"
+#include "rt/material/metal.hpp"
+#include "rt/material/lambert.hpp"
 
 #include "matrix.hpp"
 
@@ -18,12 +19,16 @@ int main() {
 
     renderer rend;
     rend.world = {
-        sphere(glm::vec3(0.0f, 0.0f, 1.0f), 0.5f, 1),
-        sphere(glm::vec3(0.0f, -10.5f, 1.0f), 10.0f, 0)
+        sphere(glm::vec3(0.0f, -100.5f, 1.0f), 100.0f, 0),
+        sphere(glm::vec3(0.0f, 0.0f, 1.2f), 0.5f, 1),
+        sphere(glm::vec3(-1.0f, 0.0f, 1.0f), 0.5f, 2),
+        sphere(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f, 3)
     };
     rend.materials = {
-		material(lambertian::scatter(glm::vec3(0.8f, 0.8f, 0.0f))),
-		material(lambertian::scatter(glm::vec3(0.1f, 0.2f, 0.5f)))
+		material(lambertian::scatter, glm::vec3(0.8f, 0.8f, 0.0f)),
+		material(lambertian::scatter, glm::vec3(0.1f, 0.2f, 0.5f)),
+		material(metal::scatter, glm::vec3(0.8f, 0.8f, 0.8f)),
+		material(metal::scatter, glm::vec3(0.8f, 0.6f, 0.2f))
 	};
 
 

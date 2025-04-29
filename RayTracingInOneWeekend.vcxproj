@@ -138,16 +138,19 @@
     <ClCompile Include="src\rt\image.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\rt\material\lambert.cpp" />
+    <ClCompile Include="src\rt\material\metal.cpp" />
     <ClCompile Include="src\rt\ray.cpp" />
     <ClCompile Include="src\rt\ray_vs_sphere.cpp" />
     <ClCompile Include="src\rt\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\matrix.hpp" />
     <ClInclude Include="src\rt\camera.hpp" />
     <ClInclude Include="src\rt\image.hpp" />
     <ClInclude Include="src\rt\intersection_info.hpp" />
     <ClInclude Include="src\rt\material\lambert.hpp" />
     <ClInclude Include="src\rt\material\material.hpp" />
+    <ClInclude Include="src\rt\material\metal.hpp" />
     <ClInclude Include="src\rt\material\random.hpp" />
     <ClInclude Include="src\rt\ray.hpp" />
     <ClInclude Include="src\rt\ray_vs_sphere.hpp" />

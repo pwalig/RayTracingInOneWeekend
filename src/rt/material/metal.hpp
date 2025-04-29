@@ -5,11 +5,11 @@
 #include "material.hpp"
 
 namespace rt {
-	namespace lambertian {
+	namespace metal {
 		bool scatter(
 			const ray& r_in,
 			const intersection_info& rec,
-            const material& mat,
+			const material& mat,
 			Rand& gen,
 			glm::vec3& attenuation,
 			ray& scattered
