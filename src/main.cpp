@@ -17,11 +17,11 @@ using namespace rt;
 int main() {
     u8 samples = 5;
     matrix<glm::vec3> img(1200, 675, glm::vec3(0.0f));
-    glm::vec3 campos = glm::vec3(0.0f, 10.0f, 10.0f);
+    glm::vec3 campos = glm::vec3(-13.0f, 2.0f, -3.0f);
     camera cam(
         campos,
         glm::vec3(0.0f, 0.0f, 0.0f),
-		img.x(), img.y(), 80.0f, 10.0f, 0.0f
+		img.x(), img.y(), 20.0f, 10.0f, 0.0f
 	);
 
     renderer rend;
