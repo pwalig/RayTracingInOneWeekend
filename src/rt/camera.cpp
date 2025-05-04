@@ -9,6 +9,30 @@ glm::vec3 random_in_unit_disk(float radius, rt::Rand& gen) {
 	}
 }
 
+glm::quat lookAt(
+	const glm::vec3& source,
+	const glm::vec3& dest,
+	const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f),
+	const glm::vec3& forward = glm::vec3(0.0f, 0.0f, 1.0f)
+) {
+	glm::vec3 dir = glm::normalize(dest - source);
+
+	glm::vec3 nonUpDir = glm::normalize(dir - (glm::dot(dir, up) * up));
+	float upAngle = glm::acos(glm::dot(forward, nonUpDir));
+	glm::vec3 upAxis = glm::cross(forward, nonUpDir);
+	glm::quat aroundUp = glm::angleAxis(upAngle, glm::dot(upAxis, upAxis) > 0.0f ? glm::normalize(upAxis) : up);
+
+	glm::vec3 side = glm::normalize(glm::cross(up, forward));
+	glm::vec3 nonAxisDir = glm::normalize(dir - (glm::dot(dir, side) * side));
+	float axisAngle = glm::acos(glm::dot(forward, nonAxisDir));
+	glm::vec3 axis = glm::cross(forward, nonAxisDir);
+	glm::quat aroundAxis = glm::angleAxis(axisAngle,
+		aroundUp * (glm::dot(axis, axis) > 0.0f ? glm::normalize(axis) : side)
+	);
+
+	return aroundAxis * aroundUp;
+}
+
 rt::camera::camera(
 	glm::vec3 Position, glm::vec3 lookAt,
 	u32 width, u32 height,
@@ -24,22 +48,7 @@ rt::camera::camera(
 	offset = glm::vec3(viewport.x / 2.0f, viewport.y / 2.0f, focal);
 	delta = glm::vec2(-viewport.x / width, -viewport.y / height);
 
-	glm::vec3 look = glm::normalize(lookAt - pos);
-	glm::vec3 lookx = glm::normalize(glm::vec3(look.x, 0.0f, look.z));
-	glm::vec3 looky = glm::normalize(glm::vec3(0.0f, look.y, look.z));
-	//glm::vec3 cross = glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), look);
-	//rot.x = cross.x;
-	//rot.y = cross.y;
-	//rot.z = cross.z;
-	//rot.w = glm::length(look) + glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), look);
-	//rot = glm::normalize(rot);
-
-	rot = glm::quat(glm::vec3(
-		glm::radians(8.588f),
-		//glm::acos(glm::dot(looky, glm::vec3(0.0f, 0.0f, 1.0f))),
-		glm::acos(glm::dot(lookx, glm::vec3(0.0f, 0.0f, 1.0f))),
-		0.0f
-	));
+	rot = ::lookAt(Position, lookAt, glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 rt::ray rt::camera::get_ray(u32 x, u32 y, Rand& gen) const
