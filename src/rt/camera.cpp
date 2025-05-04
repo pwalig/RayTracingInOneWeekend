@@ -9,31 +9,6 @@ glm::vec3 random_in_unit_disk(float radius, rt::Rand& gen) {
 	}
 }
 
-glm::quat lookAt(
-	const glm::vec3& source,
-	const glm::vec3& dest,
-	const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f),
-	const glm::vec3& forward = glm::vec3(0.0f, 0.0f, 1.0f)
-) {
-	glm::vec3 dir = glm::normalize(dest - source);
-
-	glm::vec3 nonUpDir = glm::normalize(dir - (glm::dot(dir, up) * up));
-	float upAngle = glm::acos(glm::dot(forward, nonUpDir));
-	glm::vec3 upAxis = glm::cross(forward, nonUpDir);
-	glm::quat aroundUp = glm::angleAxis(upAngle, glm::dot(upAxis, upAxis) > 0.0f ? glm::normalize(upAxis) : up);
-
-	glm::vec3 newForward = aroundUp * forward;
-	glm::vec3 side = glm::normalize(glm::cross(up, newForward));
-	glm::vec3 nonAxisDir = glm::normalize(dir - (glm::dot(dir, side) * side));
-	float axisAngle = glm::acos(glm::dot(newForward, nonAxisDir));
-	glm::vec3 axis = glm::cross(newForward, nonAxisDir);
-	glm::quat aroundAxis = glm::angleAxis(axisAngle,
-		glm::dot(axis, axis) > 0.0f ? glm::normalize(axis) : side
-	);
-
-	return aroundAxis * aroundUp;
-}
-
 rt::camera::camera(
 	glm::vec3 Position, glm::vec3 lookAt,
 	u32 width, u32 height,
@@ -46,10 +21,10 @@ rt::camera::camera(
 	viewport.y = 2.0f * focal * std::tan(glm::radians(fov) / 2.0f);
 	viewport.x = viewport.y * float(width) / float(height);
 
-	offset = glm::vec3(viewport.x / 2.0f, viewport.y / 2.0f, focal);
+	offset = glm::vec3(viewport.x / 2.0f, viewport.y / 2.0f, -focal);
 	delta = glm::vec2(-viewport.x / width, -viewport.y / height);
 
-	rot = ::lookAt(Position, lookAt);
+	rot = glm::quat_cast(glm::lookAt(glm::vec3(0.0f), lookAt - Position, glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 rt::ray rt::camera::get_ray(u32 x, u32 y, Rand& gen) const
@@ -59,6 +34,6 @@ rt::ray rt::camera::get_ray(u32 x, u32 y, Rand& gen) const
 	glm::vec3 pixelCenter = offset + glm::vec3(coord.x * delta.x, coord.y * delta.y, 0.0f);
 	glm::vec3 origin = glm::vec3(0.0f);
 	if (defocus > 0.0f) origin = (random_in_unit_disk(defocus, gen));
-	glm::vec3 rayDir = rot * (pixelCenter - origin);
-	return ray(pos + (rot * origin), glm::normalize(rayDir));
+	glm::vec3 rayDir = (pixelCenter - origin) * rot ;
+	return ray(pos + (origin * rot), glm::normalize(rayDir));
 }
